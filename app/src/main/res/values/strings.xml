@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">IdeaHub</string>
+    <string name="title_activity_idea_hub">IdeaHubActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="idea_hub">Idea Hub</string>
+    <string name="my_ideas">My Ideas</string>
+    <string name="my_favorites">My Favorites</string>
+
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="email">Email</string>
+    <string name="email_hint">email@example.com</string>
+    <string name="password">Password</string>
+    <string name="to_create_account">Click Here To Create An Account</string>
+    <string name="to_login">Click Here To Login</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="tylor_email">tylorgarrett@gmail.com</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
