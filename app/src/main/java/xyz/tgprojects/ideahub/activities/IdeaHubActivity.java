@@ -51,6 +51,7 @@ public class IdeaHubActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+        toolbar.setTitle(R.string.idea_hub);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
