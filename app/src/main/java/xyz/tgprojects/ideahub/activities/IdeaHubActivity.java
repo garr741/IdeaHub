@@ -40,6 +40,7 @@ public class IdeaHubActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_idea_hub);
         ButterKnife.bind(this);
+        toolbar.setTitle(R.string.idea_hub);
         setSupportActionBar(toolbar);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +52,6 @@ public class IdeaHubActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        toolbar.setTitle(R.string.idea_hub);
         navigationView.setNavigationItemSelectedListener(this);
     }
 

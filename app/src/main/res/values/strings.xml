@@ -22,6 +22,10 @@
     <string name="to_login">Click Here To Login</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="tylor_email">tylorgarrett@gmail.com</string>
-
+    <string name="login_successful">Login Successful</string>
+    <string name="login_failure">Login Failed</string>
+    <string name="register_success">Registration Success</string>
+    <string name="register_failure">Registration Failed</string>
+    <string name="sign_out_success">Signed Out</string>
     <string name="action_settings">Settings</string>
 </resources>

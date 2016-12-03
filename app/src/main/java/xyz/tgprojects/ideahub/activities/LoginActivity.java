@@ -1,9 +1,11 @@
 package xyz.tgprojects.ideahub.activities;
 
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -12,19 +14,23 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnEditorAction;
 import xyz.tgprojects.ideahub.R;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class LoginActivity extends AppCompatActivity implements EditText.OnEditorActionListener{
+
+    private static final String TAG = "LoginActivity";
 
     @BindView(R.id.login_toolbar)
     Toolbar toolbar;
@@ -118,18 +124,94 @@ public class LoginActivity extends AppCompatActivity implements EditText.OnEdito
         confirmPasswordInput.setOnEditorActionListener(this);
     }
 
+    private void submit() {
+        if (!validateInput()) {
+            return;
+        }
+        if (isLogin) {
+            login();
+        } else {
+            register();
+        }
+    }
+
+    private boolean validateInput() {
+        boolean valid = true;
+        if (isEmpty(emailInput)) {
+            valid = false;
+        }
+        if (isEmpty(passwordInput)) {
+            valid = false;
+        }
+        if (!isLogin && !confirmPasswordInput.getText().toString().equals(passwordInput.getText().toString())) {
+            valid = false;
+        }
+        if (!isLogin && isEmpty(confirmPasswordInput)) {
+            valid = false;
+        }
+        return valid;
+    }
+
+    private void register() {
+        firebaseAuth.createUserWithEmailAndPassword(getEmail(), getPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Snackbar.make(getView(), R.string.register_success, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(getView(), R.string.register_failure, Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void login() {
+        firebaseAuth.signInWithEmailAndPassword(getEmail(), getPassword()).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Login Success");
+                    Snackbar.make(getView(), R.string.login_successful, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Log.d(TAG, "Login Failure");
+                    Snackbar.make(getView(), R.string.login_failure, Snackbar.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private boolean isEmpty(EditText editText) {
+        return editText.getText().toString().isEmpty();
+    }
+
     @OnClick(R.id.login_view_switcher_button) void onSwitchViewsClicked() {
         isLogin = !isLogin;
         screenInit();
+    }
+
+    @OnClick(R.id.login_action_button) void onLoginActionButtonClicked() {
+        submit();
     }
 
 
     @Override
     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
         if (i == EditorInfo.IME_ACTION_DONE) {
-
+            submit();
             return true;
         }
         return false;
+    }
+
+    private String getEmail() {
+        return emailInput.getText().toString();
+    }
+
+    private String getPassword() {
+        return passwordInput.getText().toString();
+    }
+
+    private View getView() {
+        return findViewById(android.R.id.content);
     }
 }
