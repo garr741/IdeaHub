@@ -70,6 +70,7 @@ public class LoginActivity extends AppCompatActivity implements EditText.OnEdito
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
