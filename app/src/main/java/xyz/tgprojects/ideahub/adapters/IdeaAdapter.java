@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -41,8 +42,10 @@ public class IdeaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return ideaList.size();
     }
 
-    final class ViewHolder extends RecyclerView.ViewHolder {
+    final class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+        @BindView(R.id.idea_layout)
+        LinearLayout ideaLayout;
 
         @BindView(R.id.idea_title)
         TextView title;
@@ -54,6 +57,12 @@ public class IdeaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            ideaLayout.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+
         }
     }
 

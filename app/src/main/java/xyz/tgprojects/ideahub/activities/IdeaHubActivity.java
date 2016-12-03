@@ -94,6 +94,7 @@ public class IdeaHubActivity extends AppCompatActivity
         ideaHubRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new IdeaAdapter();
         ideaHubRecyclerView.setAdapter(adapter);
+        ideaHubRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
         getIdeas();
     }
 
