@@ -9,4 +9,8 @@
     tools:context="xyz.tgprojects.ideahub.activities.IdeaHubActivity"
     tools:showIn="@layout/app_bar_idea_hub">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/idea_hub_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

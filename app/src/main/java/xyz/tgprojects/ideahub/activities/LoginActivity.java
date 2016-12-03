@@ -5,7 +5,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -120,12 +119,19 @@ public class LoginActivity extends AppCompatActivity implements EditText.OnEdito
             toolbar.setTitle(isLogin ? R.string.login : R.string.register);
         } else {
             toolbar.setTitle(R.string.my_account);
+            loggedInText.setText(user.getEmail());
+            loginActionButton.setText(R.string.sign_out);
+
         }
         passwordInput.setOnEditorActionListener(this);
         confirmPasswordInput.setOnEditorActionListener(this);
     }
 
     private void submit() {
+        if (firebaseAuth.getCurrentUser() != null) {
+            firebaseAuth.signOut();
+            return;
+        }
         if (!validateInput()) {
             return;
         }
@@ -171,10 +177,8 @@ public class LoginActivity extends AppCompatActivity implements EditText.OnEdito
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Log.d(TAG, "Login Success");
                     Snackbar.make(getView(), R.string.login_successful, Snackbar.LENGTH_SHORT).show();
                 } else {
-                    Log.d(TAG, "Login Failure");
                     Snackbar.make(getView(), R.string.login_failure, Snackbar.LENGTH_SHORT).show();
                 }
             }
