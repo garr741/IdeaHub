@@ -1,24 +1,21 @@
 package xyz.tgprojects.ideahub.activities;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -39,9 +36,9 @@ import xyz.tgprojects.ideahub.models.Idea;
 import xyz.tgprojects.ideahub.utilities.ApiRoutes;
 import xyz.tgprojects.ideahub.utilities.ApiService;
 
-public class IdeaHubActivity extends AppCompatActivity
+public class MyIdeasActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        FirebaseAuth.AuthStateListener {
+        FirebaseAuth.AuthStateListener{
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
@@ -52,31 +49,26 @@ public class IdeaHubActivity extends AppCompatActivity
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.drawer_layout)
+    @BindView(R.id.activity_my_ideas)
     DrawerLayout drawer;
 
-    @BindView(R.id.idea_hub_recyclerview)
-    RecyclerView ideaHubRecyclerView;
+    @BindView(R.id.my_ideas_recyclerview)
+    RecyclerView myIdeasRecyclerView;
 
-    private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
-    private ApiRoutes apiRoutes;
+    private IdeaAdapter ideaAdapter;
     private CompositeSubscription subs;
-    private IdeaAdapter adapter;
+    private ApiRoutes apiRoutes;
+    private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_idea_hub);
-
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
+        setContentView(R.layout.activity_my_ideas);
         ButterKnife.bind(this);
-        apiRoutes = ApiService.getApi();
-        subs = new CompositeSubscription();
 
-        toolbar.setTitle(R.string.idea_hub);
+        toolbar.setTitle(R.string.my_ideas);
         setSupportActionBar(toolbar);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,14 +81,40 @@ public class IdeaHubActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        authStateListener = this;
 
-        ideaHubRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new IdeaAdapter();
-        ideaHubRecyclerView.setAdapter(adapter);
-        ideaHubRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        apiRoutes = ApiService.getApi();
+        subs = new CompositeSubscription();
+        myIdeasRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ideaAdapter = new IdeaAdapter();
+        myIdeasRecyclerView.setAdapter(ideaAdapter);
+        getMyIdeas();
+        authStateListener = this;
         screenInit();
-        getIdeas();
+    }
+
+    private void getMyIdeas() {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user == null) {
+            Snackbar.make(getView(), "You must be signed in", Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        subs.add(apiRoutes.getUserIdeas(user.getUid())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Action1<List<Idea>>() {
+                @Override
+                public void call(List<Idea> ideas) {
+                    ideaAdapter.swapData(ideas);
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    Log.d("MyIdeasActivity", throwable.getMessage());
+                }
+            })
+        );
     }
 
     @Override
@@ -113,6 +131,10 @@ public class IdeaHubActivity extends AppCompatActivity
         }
     }
 
+    private View getView() {
+        return findViewById(android.R.id.content);
+    }
+
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -126,34 +148,15 @@ public class IdeaHubActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.menu_idea_hub) {
-
+            startActivity(new Intent(this, IdeaHubActivity.class));
         } else if (id == R.id.menu_my_ideas) {
-            startActivity(new Intent(this, MyIdeasActivity.class));
+
         } else if (id == R.id.menu_my_favorites) {
             startActivity(new Intent(this, MyFavoritesActivity.class));
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void getIdeas() {
-        subs.add(apiRoutes.getIdeas()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Idea>>() {
-                    @Override
-                    public void call(List<Idea> ideas) {
-                        adapter.swapData(ideas);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-
-                    }
-                })
-        );
     }
 
     private void screenInit() {
