@@ -40,6 +40,7 @@ public class MyFavoritesActivity extends AppCompatActivity
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private FirebaseAuth.AuthStateListener authStateListener;
+    private View headerView;
 
 
     @Override
@@ -59,6 +60,13 @@ public class MyFavoritesActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
+        headerView = navigationView.getHeaderView(0);
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
         navigationView.setNavigationItemSelectedListener(this);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -106,7 +114,6 @@ public class MyFavoritesActivity extends AppCompatActivity
     }
 
     private void screenInit() {
-        View headerView = navigationView.getHeaderView(0);
         TextView navBarHeaderText = (TextView) headerView.findViewById(R.id.nav_bar_header_text);
         if (firebaseUser != null) {
             navBarHeaderText.setText(firebaseUser.getEmail());

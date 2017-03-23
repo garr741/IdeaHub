@@ -121,7 +121,6 @@ public class LoginActivity extends AppCompatActivity implements EditText.OnEdito
             toolbar.setTitle(R.string.my_account);
             loggedInText.setText(user.getEmail());
             loginActionButton.setText(R.string.sign_out);
-
         }
         passwordInput.setOnEditorActionListener(this);
         confirmPasswordInput.setOnEditorActionListener(this);

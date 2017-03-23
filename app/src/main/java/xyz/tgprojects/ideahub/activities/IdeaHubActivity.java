@@ -64,6 +64,7 @@ public class IdeaHubActivity extends AppCompatActivity
     private CompositeSubscription subs;
     private IdeaAdapter adapter;
     private FirebaseUser firebaseUser;
+    private View headerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,13 @@ public class IdeaHubActivity extends AppCompatActivity
         ButterKnife.bind(this);
         apiRoutes = ApiService.getApi();
         subs = new CompositeSubscription();
-
+        headerView = navigationView.getHeaderView(0);
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
         toolbar.setTitle(R.string.idea_hub);
         setSupportActionBar(toolbar);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -157,7 +164,6 @@ public class IdeaHubActivity extends AppCompatActivity
     }
 
     private void screenInit() {
-        View headerView = navigationView.getHeaderView(0);
         TextView navBarHeaderText = (TextView) headerView.findViewById(R.id.nav_bar_header_text);
         if (firebaseUser != null) {
             navBarHeaderText.setText(firebaseUser.getEmail());

@@ -61,13 +61,13 @@ public class MyIdeasActivity extends AppCompatActivity
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private FirebaseAuth.AuthStateListener authStateListener;
+    private View headerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_ideas);
         ButterKnife.bind(this);
-
         toolbar.setTitle(R.string.my_ideas);
         setSupportActionBar(toolbar);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +81,13 @@ public class MyIdeasActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
+        headerView = navigationView.getHeaderView(0);
+        headerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         apiRoutes = ApiService.getApi();
@@ -160,7 +166,6 @@ public class MyIdeasActivity extends AppCompatActivity
     }
 
     private void screenInit() {
-        View headerView = navigationView.getHeaderView(0);
         TextView navBarHeaderText = (TextView) headerView.findViewById(R.id.nav_bar_header_text);
         if (firebaseUser != null) {
             navBarHeaderText.setText(firebaseUser.getEmail());
