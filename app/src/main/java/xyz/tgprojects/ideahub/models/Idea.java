@@ -1,25 +1,25 @@
 package xyz.tgprojects.ideahub.models;
 
 public class Idea {
-    private String title;
-    private String description;
-    private String creatorId;
+    private String text;
+    private String createdAt;
+    private String creator;
 
-    public Idea(String title, String description, String creatorId) {
-        this.title = title;
-        this.description = description;
-        this.creatorId = creatorId;
+    public Idea(String text, String createdAt, String creator) {
+        this.text = text;
+        this.createdAt = createdAt;
+        this.creator = creator;
     }
 
-    public String getTitle() {
-        return title;
+    public String getText() {
+        return text;
     }
 
-    public String getDescription() {
-        return description;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public String getCreatorId() {
-        return creatorId;
+    public String getCreator() {
+        return creator;
     }
 }

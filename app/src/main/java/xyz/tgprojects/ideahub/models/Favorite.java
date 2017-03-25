@@ -2,30 +2,30 @@ package xyz.tgprojects.ideahub.models;
 
 public class Favorite {
     private String userId;
-    private String title;
-    private String description;
-    private String creatorId;
+    private String text;
+    private String createdAt;
+    private String creator;
 
-    public Favorite(String userId, String title, String description, String creatorId) {
+    public Favorite(String userId, String text, String createdAt, String creator) {
         this.userId = userId;
-        this.title = title;
-        this.description = description;
-        this.creatorId = creatorId;
+        this.text = text;
+        this.createdAt = createdAt;
+        this.creator = creator;
     }
 
     public String getUserId() {
         return userId;
     }
 
-    public String getTitle() {
-        return title;
+    public String getText() {
+        return text;
     }
 
-    public String getDescription() {
-        return description;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public String getCreatorId() {
-        return creatorId;
+    public String getCreator() {
+        return creator;
     }
 }

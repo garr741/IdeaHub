@@ -33,8 +33,8 @@ public class IdeaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder aHolder, int position) {
         Idea idea = ideaList.get(position);
         ViewHolder holder = (ViewHolder) aHolder;
-        holder.title.setText(idea.getTitle());
-        holder.description.setText(idea.getDescription());
+        holder.title.setText(idea.getText());
+        holder.description.setText(idea.getCreatedAt());
     }
 
     @Override
